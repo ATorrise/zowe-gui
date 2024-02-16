@@ -1,0 +1,109 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`zos-tso start address-space definition should not have changed 1`] = `
+Object {
+  "aliases": Array [
+    "as",
+  ],
+  "description": "Start a TSO address space, from which you will receive a token (a.k.a 'servlet-key') for further address space interaction (e.g. termination).",
+  "examples": Array [
+    Object {
+      "description": "Start TSO/E address space",
+      "options": "",
+    },
+    Object {
+      "description": "Start TSO/E address space, and receive response in JSON format",
+      "options": "--rfj",
+    },
+    Object {
+      "description": "Start TSO/E address space, and print only the servlet key",
+      "options": "--sko",
+    },
+  ],
+  "name": "address-space",
+  "options": Array [
+    Object {
+      "aliases": Array [
+        "a",
+      ],
+      "description": "Your z/OS TSO/E accounting information.",
+      "group": "TSO ADDRESS SPACE OPTIONS",
+      "name": "account",
+      "required": true,
+      "type": "string",
+    },
+    Object {
+      "aliases": Array [
+        "cs",
+      ],
+      "defaultValue": "697",
+      "description": "Character set for address space to convert messages and responses from UTF-8 to EBCDIC.",
+      "group": "TSO ADDRESS SPACE OPTIONS",
+      "name": "character-set",
+      "type": "string",
+    },
+    Object {
+      "aliases": Array [
+        "cp",
+      ],
+      "defaultValue": "1047",
+      "description": "Codepage value for TSO/E address space to convert messages and responses from UTF-8 to EBCDIC.",
+      "group": "TSO ADDRESS SPACE OPTIONS",
+      "name": "code-page",
+      "type": "string",
+    },
+    Object {
+      "aliases": Array [
+        "cols",
+      ],
+      "defaultValue": 80,
+      "description": "The number of columns on a screen.",
+      "group": "TSO ADDRESS SPACE OPTIONS",
+      "name": "columns",
+      "type": "number",
+    },
+    Object {
+      "aliases": Array [
+        "l",
+      ],
+      "defaultValue": "IZUFPROC",
+      "description": "The logon procedure to use when creating TSO procedures on your behalf.",
+      "group": "TSO ADDRESS SPACE OPTIONS",
+      "name": "logon-procedure",
+      "type": "string",
+    },
+    Object {
+      "aliases": Array [
+        "rs",
+      ],
+      "defaultValue": 4096,
+      "description": "Region size for the TSO/E address space.",
+      "group": "TSO ADDRESS SPACE OPTIONS",
+      "name": "region-size",
+      "type": "number",
+    },
+    Object {
+      "defaultValue": 24,
+      "description": "The number of rows on a screen.",
+      "group": "TSO ADDRESS SPACE OPTIONS",
+      "name": "rows",
+      "type": "number",
+    },
+    Object {
+      "aliases": Array [
+        "sko",
+      ],
+      "description": "Specify this option to print only the servlet key",
+      "name": "servlet-key-only",
+      "type": "boolean",
+    },
+  ],
+  "profile": Object {
+    "optional": Array [
+      "zosmf",
+      "tso",
+    ],
+  },
+  "type": "command",
+}
+`;

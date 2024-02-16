@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`zos-jobs submit group definition should not have changed 1`] = `
+Object {
+  "aliases": Array [
+    "sub",
+  ],
+  "description": "Submit a job (JCL).",
+  "name": "submit",
+  "summary": "Submit a z/OS job",
+  "type": "group",
+}
+`;

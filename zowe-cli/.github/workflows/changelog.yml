@@ -1,0 +1,27 @@
+name: Changelog
+
+on:
+  pull_request:
+    branches:
+      - master
+      - zowe-v1-lts
+      - next
+
+jobs:
+  changelog:
+    runs-on: ubuntu-latest
+    if: ${{ contains( github.event.pull_request.labels.*.name, 'no-changelog') != true }}
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Check Changelog Updated
+      uses: awharn/check_changelog_action@v1
+      with:
+        header: '## Recent Changes'
+        file: 'CHANGELOG.md'
+        lerna: true
+        ignoreFiles: '__tests__|package.json|package-lock.json|*.md'

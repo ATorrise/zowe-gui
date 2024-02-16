@@ -1,0 +1,18 @@
+name: Zowe CLI Auto Responder for New Issues
+# This workflow is triggered when a label is added to an issue.
+on:
+  issues:
+    types: labeled
+
+jobs:
+  processLabelAction:
+    name: Process Label Action
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+       
+      - name: Process Label Action
+        uses: dessant/label-actions@v4
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          config-path: '.github/label-actions.yml'

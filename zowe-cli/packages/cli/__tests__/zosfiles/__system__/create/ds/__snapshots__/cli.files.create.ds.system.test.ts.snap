@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Create Data Set Success scenarios should create a data set 1`] = `
+"================Z/OS FILES CREATE DS===============
+Data set created successfully.
+"
+`;
+
+exports[`Create Data Set Success scenarios should create a data set with missing like 1`] = `
+"================Z/OS FILES CREATE DS===============
+Data set created successfully.
+"
+`;

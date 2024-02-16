@@ -1,0 +1,17 @@
+{
+    "commonSettings": {
+        "outFilesDirectory": "${workspaceFolder}/dist"
+    },
+    "configurations": [
+    {
+        "type": "node",
+        "request": "launch",
+        "name": "config init",
+        "program": "${workspaceFolder}/zowe-cli/packages/cli/lib/main.js",
+        "console": "integratedTerminal",
+        "args": ["config", "init"],
+        "outputCapture": "std",
+        "resolveSourceMapLocations": null
+    }
+  ]
+}

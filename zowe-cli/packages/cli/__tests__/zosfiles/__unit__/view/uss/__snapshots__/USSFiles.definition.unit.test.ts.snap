@@ -1,0 +1,47 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`zos-files view uss file command definition should not have changed 1`] = `
+Array [
+  Object {
+    "aliases": Array [
+      "b",
+    ],
+    "description": "Transfer the file content in binary mode (no EBCDIC to ASCII conversion).",
+    "name": "binary",
+    "type": "boolean",
+  },
+  Object {
+    "aliases": Array [
+      "ec",
+    ],
+    "conflictsWith": Array [
+      "binary",
+      "record",
+    ],
+    "description": "Transfer the file content with encoding mode, which means that data conversion is performed using the file encoding specified.",
+    "name": "encoding",
+    "type": "string",
+  },
+  Object {
+    "aliases": Array [
+      "R",
+    ],
+    "description": "The range of records to return in either \`SSS-EEE\` or \`SSS,NNN\` format. SSS identifies the start record, EEE identifies the end record, and NNN identifies the number of retrieved records.",
+    "name": "range",
+    "type": "string",
+  },
+]
+`;
+
+exports[`zos-files view uss file command definition should not have changed 2`] = `
+Array [
+  Object {
+    "description": "View the contents of the USS file \\"/a/ibmuser/my_text.txt\\"",
+    "options": "\\"/a/ibmuser/my_text.txt\\"",
+  },
+  Object {
+    "description": "View the contents of the USS file \\"/a/ibmuser/MyJavaClass.class\\" in binary mode",
+    "options": "\\"/a/ibmuser/MyJavaClass.class\\" --binary",
+  },
+]
+`;
