@@ -12,7 +12,7 @@ npm run build
 ```sh
 # For Tauri
 cd tauriApp/src-tauri
-cargo build --release
+cargo build
 ```
 Build and run zowe
 ```sh
