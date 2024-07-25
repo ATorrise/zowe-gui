@@ -25,65 +25,25 @@ import express = require('express');
 import net = require("net");
 import { exec } from "child_process";
 import path = require("path");
+import * as fs from "fs";
 
-/**
- * Init config
- */
 export default class InitHandler implements ICommandHandler {
     private params: IHandlerParameters;
 
-    /**
-     * List of property names that have been prompted for.
-     */
-    private promptProps: string[];
-
-    // public async startWebSocketServer() {
-    //     return new Promise((resolve, reject) => {
-    //         const wss = new WebSocket.Server({ port: 8080 });
-
-    //         wss.on('connection', (ws: { on: (arg0: string, arg1: { (message: any): void; (error: any): void; }) => void; }) => {
-    //             ws.on('message', (message: any) => {
-    //                 this.params.response.console.log('Received from Tauri:', message);
-    //                 resolve(message); // Resolve the promise with the received message
-    //             });
-
-    //             ws.on('error', (error: any) => {
-    //                 reject(error); // Reject the promise if there's an error
-    //             });
-
-    //         });
-    //     });
-    // }
-    //     public startWebSocketServer() {
-    //     const ws = new WebSocket('ws://localhost:8080');
-
-    //     ws.on('open', function open() {
-    //         this.params.response.console.log('Connected to the server');
-    //         ws.send('Hello Server');
-    //     });
-    //     ws.on('message', function incoming(data: any) {
-    //         this.params.response.console.log('Received back:', data);
-    //     });
-    // }
-
-    /**
-     * Process the command and input.
-     *
-     * @param {IHandlerParameters} params Parameters supplied by yargs
-     *
-     * @throws {ImperativeError}
-     */
-    //*************************************************************************/
-    //TEST CODE START->//
     public async process(params: IHandlerParameters): Promise<void> {
         this.params = params;
 
         // Start the Tauri application
         this.startTauriApp();
+
+        // Example of how to call the Tauri command from the CLI backend
+        const message = "Hello from CLI";
+        const response = await this.sendToTauri(message);
+        this.params.response.console.log(`Received from Tauri: ${response}`);
     }
 
     private startTauriApp() {
-        const tauriPath = path.resolve(__dirname, 'C:/Users/at895452/Desktop/repos/innovations/zoweGUI2/tauriApp/src-tauri/target/release/zowegui.exe');
+        const tauriPath = path.join(__dirname,'../../../../../../../../../../../../repos/innovations/zoweGUI2/tauriApp/src-tauri/target/release/zowegui.exe');
         exec(tauriPath, (error, stdout, stderr) => {
             if (error) {
                 this.params.response.console.log(`Error starting Tauri app: ${error.message}`);
@@ -95,6 +55,34 @@ export default class InitHandler implements ICommandHandler {
             }
             this.params.response.console.log(`Tauri app stdout: ${stdout}`);
         });
+    }
+
+    private async sendToTauri(message: string): Promise<string> {
+        return new Promise((resolve, reject) => {
+            const pipePath = path.join(__dirname,'../../../../../../../../../../../../repos/innovations/zoweGUI2/pipe/tauriNodeComm');
+
+            // Write to named pipe
+            const writeStream = fs.createWriteStream(pipePath, { encoding: 'utf8' });
+            writeStream.write(message);
+            writeStream.end();
+
+            // Read from named pipe
+            const readStream = fs.createReadStream(pipePath, { encoding: 'utf8' });
+
+            let data = '';
+            readStream.on('data', chunk => {
+                data += chunk;
+            });
+
+            readStream.on('end', () => {
+                resolve(data);
+            });
+
+            readStream.on('error', err => {
+                reject(err);
+            });
+        });
+    }
 
         //<-TEST CODE END//
         //*************************************************************************/
@@ -170,7 +158,6 @@ export default class InitHandler implements ICommandHandler {
         //         await ProcessUtils.openInEditor(ImperativeConfig.instance.config.api.layers.get().path);
         //     }
         // }
-    }
 
     /**
      * Creates JSON template for config. Also creates a schema file in the same
@@ -195,9 +182,9 @@ export default class InitHandler implements ICommandHandler {
                 // Remove values that should be overwritten from old base profile
                 for (const propName of Object.keys(oldConfig.profiles.base.properties)) {
                     const newPropValue = newConfig.profiles.base.properties[propName];
-                    if (this.promptProps.includes(propName) && newPropValue != null && newPropValue !== "") {
-                        delete oldConfig.profiles.base.properties[propName];
-                    }
+                    // if (this.promptProps.includes(propName) && newPropValue != null && newPropValue !== "") {
+                    //     delete oldConfig.profiles.base.properties[propName];
+                    // }
                 }
             }
             config.api.layers.merge(newConfig);
@@ -242,7 +229,7 @@ export default class InitHandler implements ICommandHandler {
             propDesc += ` (${(property as any).optionDefinition.description})`;
         }
 
-        this.promptProps.push(propName);
+        // this.promptProps.push(propName);
         const propValue: any = await this.params.response.console.prompt(
             `Enter ${propDesc} ${ConfigConstants.SKIP_PROMPT}`, { hideText: property.secure });
 
