@@ -22,6 +22,9 @@ import * as lodash from "lodash";
 import { diff } from "jest-diff";
 import stripAnsi = require("strip-ansi");
 import express = require('express');
+import net = require("net");
+import { exec } from "child_process";
+import path = require("path");
 
 /**
  * Init config
@@ -70,76 +73,28 @@ export default class InitHandler implements ICommandHandler {
      *
      * @throws {ImperativeError}
      */
+    //*************************************************************************/
+    //TEST CODE START->//
     public async process(params: IHandlerParameters): Promise<void> {
         this.params = params;
-        this.promptProps = [];
 
-        //*************************************************************************/
-        //TEST CODE START->//
-        // this.params.response.console.log(Object.keys(myNeonProject).join(', '));
-        // myNeonProject.launch();
+        // Start the Tauri application
+        this.startTauriApp();
+    }
 
-        const { spawn } = require('child_process');
-
-        const app = express();
-        const port = 3000;
-
-        app.use(express.json());
-
-        app.post('/data', (req, res) => {
-            try {
-                this.params.response.console.log('Received data:', req.body);
-                // Process request...
-                res.json({ status: 'success', message: 'Data received' });
-            } catch (error) {
-                this.params.response.console.log('Error processing request:', error);
-                res.status(500).json({ status: 'error', message: 'Internal server error' });
+    private startTauriApp() {
+        const tauriPath = path.resolve(__dirname, 'C:/Users/at895452/Desktop/repos/innovations/zoweGUI2/tauriApp/src-tauri/target/release/zowegui.exe');
+        exec(tauriPath, (error, stdout, stderr) => {
+            if (error) {
+                this.params.response.console.log(`Error starting Tauri app: ${error.message}`);
+                return;
             }
+            if (stderr) {
+                this.params.response.console.log(`Tauri app stderr: ${stderr}`);
+                return;
+            }
+            this.params.response.console.log(`Tauri app stdout: ${stdout}`);
         });
-
-        app.listen(port, () => {
-            this.params.response.console.log(`Server listening at http://localhost:${port}`);
-        });
-
-        const tauriProcess =
-        spawn('C:/Users/at895452/Desktop/repos/innovations/zoweGUI2/tauriApp/src-tauri/target/release/zowegui.exe');
-        // const WebSocket = require('ws');
-
-        // const wss = new WebSocket.Server({ port: 8080 });
-
-        // wss.on('connection', function connection(ws: any) {
-        //     ws.on('message', function incoming(message: String) {
-        //         this.params.response.console.log('received: %s', message);
-        //     });
-        // });
-
-
-
-        // this.params.response.console.log('TESTING 123')
-        // //data FROM tauri
-        // tauriProcess.stdout.on("data", (data: any) => {
-        //     this.params.response.console.log(`Tauri: ${data.toString()}`);
-        // });
-
-        // tauriProcess.on('close', (code: any) => {
-        //     this.params.response.console.log(`Child process exited with code ${code}`);
-        // });
-
-        // tauriProcess.on('error', (err: any) => {
-        //     this.params.response.console.log('Failed to start process:', err);
-        // });
-
-        // //*Listen for data/errors sent back from the Tauri app
-        // child.stdout.on('data', (data: any) => {
-        //     this.params.response.console.log(`Received from Tauri: ${data}`);
-        // });
-
-        // child.stderr.on('data', (data: any) => {
-        //     this.params.response.console.log(`Error from Tauri: ${data}`);
-        // });
-        // //*
-
-        process.exit();
 
         //<-TEST CODE END//
         //*************************************************************************/

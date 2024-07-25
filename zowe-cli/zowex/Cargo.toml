@@ -22,6 +22,7 @@ sysinfo = "0.29.4"
 tokio = { version = "1.28.0", features = ["io-util", "macros", "net", "rt-multi-thread"] }
 whoami = "1.4.0"
 yansi = "0.5.1"
+tauri_project = { path = "../../tauriApp/src-tauri" }
 
 [target.'cfg(windows)'.dependencies]
 fslock = "0.2.1"

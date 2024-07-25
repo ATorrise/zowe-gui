@@ -9,7 +9,8 @@
 *
 */
 
-// Functions related to daemon cummunication.
+// Functions related to daemon communication.
+// this rust code is designed to connect to an already existing named pipe or Unix
 
 use std::io;
 use std::io::prelude::*;
@@ -43,6 +44,21 @@ use crate::util::util_get_username;
 type DaemonClient = tokio::net::UnixStream;
 #[cfg(target_family = "windows")]
 type DaemonClient = NamedPipeClient;
+
+
+/**
+ * Attempt to make a TCP connection to zowe app.
+ *
+ * @param zowe_pipe
+ *      The communication channel with which we talk to zowe
+ *
+ * @returns
+ *      A Result containing a stream upon success.
+ *      This function exits the process upon error.
+ */
+pub async fn connect_zowe(
+    zowe_pipe: &str
+) -> io::Result<DaemonClient> {}
 
 /**
  * Attempt to make a TCP connection to the daemon.
