@@ -84,7 +84,7 @@ Using [napi-rs](https://napi.rs/) or [Neon](https://neon-bindings.com/) to creat
 - Demonstrated a GUI with a config init flow.
 
 ## Future Considerations:
-- Expected difficulties in capturing JSON structure in a GUI.
+- Expected difficulties capturing all relevant and possible properties in the GUI.
 - Scope of the POC and GUI.
 
 
