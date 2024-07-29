@@ -51,7 +51,7 @@ Many customers struggle with configurations due to the flexibility and complexit
 
 ## Integration with the CLI and IPC Considerations:
 ### Binding Rust to the CLI:
-Using [N-API](https://nodejs.org/api/n-api.html) and [Neon](https://neon-bindings.com/) to create native modules for Node.js.
+Using [napi-rs](https://napi.rs/) or [Neon](https://neon-bindings.com/) to create native modules for Node.js.
 
 ### IPC Methods:
 #### WebSockets:
