@@ -91,6 +91,7 @@ Using [napi-rs](https://napi.rs/) or [Neon](https://neon-bindings.com/) to creat
 - [X] Named pipes leveraging the preexisting work from our daemon zowe-cli/zowex/src/comm.rs
 - [ ] Get selected data into the cli from the UI before it closes (enable dynamism)
     - [ ] Implement a file watcher?
+    - [ ] Get data from named pipe and into config.json
 - [ ] Workshop UI on paper/whiteboard
     - [ ] Check with a team member to ensure proper understanding/directionthen
     - [ ] Possibly review it with some UX person?
