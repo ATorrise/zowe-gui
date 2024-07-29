@@ -1,5 +1,4 @@
-## Design Document
-https://docs.google.com/document/d/1O_Kh8d5py-Emobe-op5IVTBpx0sc2tpo2zJawpNNpx4/edit?usp=sharing 
+## [Design Document](./DESIGN_DOC.md)
 
 ## Running the project
 
@@ -23,7 +22,7 @@ npm run build
 ```
 
 ### 3. Run Zowe
-Use npx 
+Use npx
   ```sh
   npx zowe config init # triggers gui
   ```
