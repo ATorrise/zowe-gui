@@ -87,5 +87,19 @@ Using [napi-rs](https://napi.rs/) or [Neon](https://neon-bindings.com/) to creat
 - Expected difficulties capturing all relevant and possible properties in the GUI.
 - Scope of the POC and GUI.
 
+## TO DO 7/29-8/2:
+- [X] Named pipes leveraging the preexisting work from our daemon zowe-cli/zowex/src/comm.rs
+- [ ] Get selected data into the cli from the UI before it closes (enable dynamism)
+    - [ ] Implement a file watcher?
+- [ ] Workshop UI on paper/whiteboard
+    - [ ] Check with a team member to ensure proper understanding/directionthen
+    - [ ] Possibly review it with some UX person?
+- [ ] Set up UI with multiple views with svelte frontend
+    - [ ] Pick level of nesting (or flat structure?)write out each profile's credentials
+    - [ ] Enable a sidebar that shows what's been added (profile name, not all the details)
+- [ ] Detect if already have a config
+    - [ ] determine if showing gui error popup or cli red error
+- [ ] figure out how to populate fields with any defaults
+
 
 Original Design Document: https://docs.google.com/document/d/1O_Kh8d5py-Emobe-op5IVTBpx0sc2tpo2zJawpNNpx4/edit?usp=sharing 
