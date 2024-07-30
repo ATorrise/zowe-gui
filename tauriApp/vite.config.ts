@@ -4,6 +4,6 @@ import { defineConfig } from 'vite';
 export default defineConfig({
 	plugins: [sveltekit()],
 	build: {
-		outDir: "build", // Here, the output directory is 'dist'
+		outDir: "dist",
 	  }
 });

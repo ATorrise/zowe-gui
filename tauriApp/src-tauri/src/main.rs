@@ -1,49 +1,31 @@
-use std::fs::OpenOptions;
-use std::io::{Write, Read};
-use std::sync::mpsc::{channel, Receiver};
-use std::thread;
-use std::time::Duration;
+#![cfg_attr(
+    all(not(debug_assertions), target_os = "windows"),
+    windows_subsystem = "windows"
+)]
 
-use tauri::generate_handler;
-use tauri::Manager;
+use tokio::runtime::Runtime;
+
+mod comm;
+use comm::{connect_to_pipe, write_to_pipe, read_from_pipe};
 
 #[tauri::command]
-fn send_to_node(message: String) {
-    let pipe_path = r"\\.\pipe\tauriNodeComm";
+fn send_to_pipe(message: String) -> Result<String, String> {
+    println!("Received message from frontend: {}", message); // Print the message in the terminal
 
-    // Write to named pipe
-    match OpenOptions::new().write(true).open(pipe_path) {
-        Ok(mut pipe) => {
-            if let Err(e) = pipe.write_all(message.as_bytes()) {
-                eprintln!("Failed to write to pipe: {}", e);
-            }
-        }
-        Err(e) => {
-            eprintln!("Failed to open pipe: {}", e);
-        }
-    }
+    let runtime = Runtime::new().unwrap();
+    let pipe_name = r"\\.\pipe\tauriNodeComm";
 
-    // Read response from named pipe
-    let response = read_from_pipe(pipe_path).unwrap_or_else(|e| format!("Failed to read from pipe: {}", e));
-    println!("Received response from pipe: {}", response);
-}
-
-fn read_from_pipe(pipe_path: &str) -> std::io::Result<String> {
-    let mut buffer = String::new();
-    match OpenOptions::new().read(true).open(pipe_path) {
-        Ok(mut pipe) => {
-            pipe.read_to_string(&mut buffer)?;
-        }
-        Err(e) => {
-            eprintln!("Failed to open pipe for reading: {}", e);
-        }
-    }
-    Ok(buffer)
+    runtime.block_on(async {
+        let mut client = connect_to_pipe(pipe_name).await.map_err(|e| e.to_string())?;
+        write_to_pipe(&mut client, &message).await.map_err(|e| e.to_string())?;
+        let response = read_from_pipe(&mut client).await.map_err(|e| e.to_string())?;
+        Ok(response)
+    })
 }
 
 fn main() {
     tauri::Builder::default()
-        .invoke_handler(generate_handler![send_to_node])
+        .invoke_handler(tauri::generate_handler![send_to_pipe])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

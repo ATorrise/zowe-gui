@@ -1,31 +1,41 @@
 <script context="module" lang="ts">
-  import { onMount } from 'svelte';
+  import { invoke } from '@tauri-apps/api/tauri';
 
-  export let data: string = '';
+  let data = '';
 
   async function sendData() {
-    const { exec } = require('child_process');
-    const fs = require('fs');
-    const pipeName = '\\\\.\\pipe\\tauriNodeComm';
-
-    fs.open(pipeName, 'w', (err, fd) => {
-      if (err) {
-        console.error('Failed to open named pipe:', err);
-        return;
-      }
-      fs.write(fd, data, (err) => {
-        if (err) {
-          console.error('Failed to write to named pipe:', err);
-        }
-        fs.close(fd, () => {});
-      });
-    });
+    try {
+      const response = await invoke('send_to_pipe', { message: data });
+      console.log('Response from backend:', response);
+    } catch (error) {
+      console.error('Error sending data to backend:', error);
+    }
   }
-
-  onMount(() => {
-    // You can initialize or call sendData() here if needed
-  });
 </script>
 
-<input type="text" bind:value={data} placeholder="Enter your message" />
-<button on:click={sendData}>Send Data to Named Pipe</button>
+<style>
+  .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+  }
+
+  input {
+    margin: 10px;
+    padding: 5px;
+    font-size: 16px;
+  }
+
+  button {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+</style>
+
+<div class="container">
+  <input type="text" bind:value={data} placeholder="Enter your message" />
+  <button on:click={sendData}>Send Data to Backend</button>
+</div>
