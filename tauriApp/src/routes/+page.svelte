@@ -1,41 +1,34 @@
-<script context="module" lang="ts">
-  import { invoke } from '@tauri-apps/api/tauri';
+<script>
+  import { writable } from 'svelte/store';
+  import WelcomeScreen from './components/WelcomeScreen.svelte';
+  import SystemConfig from './components/SystemConfig.svelte';
+  import ReviewConfig from './components/ReviewConfig.svelte';
 
-  let data = '';
+  const currentStep = writable(0);
+  const systems = writable([]);
+  const defaultSystem = writable(null);
 
-  async function sendData() {
-    try {
-      const response = await invoke('send_to_pipe', { message: data });
-      console.log('Response from backend:', response);
-    } catch (error) {
-      console.error('Error sending data to backend:', error);
-    }
+  function nextStep() {
+    currentStep.update(n => n + 1);
+  }
+
+  function prevStep() {
+    currentStep.update(n => n - 1);
   }
 </script>
 
+<main>
+  {#if $currentStep === 0}
+    <WelcomeScreen {nextStep} />
+  {:else if $currentStep === 1}
+    <SystemConfig {systems} {defaultSystem} {nextStep} {prevStep} />
+  {:else if $currentStep === 2}
+    <ReviewConfig {systems} {defaultSystem} {prevStep} />
+  {/if}
+</main>
+
 <style>
-  .container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-  }
-
-  input {
-    margin: 10px;
-    padding: 5px;
-    font-size: 16px;
-  }
-
-  button {
-    padding: 10px 20px;
-    font-size: 16px;
-    cursor: pointer;
+  main {
+    padding: 2rem;
   }
 </style>
-
-<div class="container">
-  <input type="text" bind:value={data} placeholder="Enter your message" />
-  <button on:click={sendData}>Send Data to Backend</button>
-</div>

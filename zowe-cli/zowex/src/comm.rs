@@ -19,6 +19,7 @@ use std::thread;
 use std::time::Duration;
 use tokio::io::AsyncBufReadExt;
 use tokio::io::AsyncWriteExt;
+use tokio::io::AsyncReadExt;
 use tokio::io::BufReader;
 
 #[cfg(target_family = "windows")]
@@ -45,20 +46,22 @@ type DaemonClient = tokio::net::UnixStream;
 #[cfg(target_family = "windows")]
 type DaemonClient = NamedPipeClient;
 
+pub async fn connect_to_pipe(pipe_name: &str) -> io::Result<DaemonClient> {
+    let client = ClientOptions::new().open(pipe_name)?;
+    Ok(client)
+}
 
-/**
- * Attempt to make a TCP connection to zowe app.
- *
- * @param zowe_pipe
- *      The communication channel with which we talk to zowe
- *
- * @returns
- *      A Result containing a stream upon success.
- *      This function exits the process upon error.
- */
-pub async fn connect_zowe(
-    zowe_pipe: &str
-) -> io::Result<DaemonClient> {}
+pub async fn write_to_pipe(client: &mut DaemonClient, message: &str) -> io::Result<()> {
+    client.write_all(message.as_bytes()).await?;
+    Ok(())
+}
+
+pub async fn read_from_pipe(client: &mut DaemonClient) -> io::Result<String> {
+    let mut buffer = vec![0; 1024];
+    let n = client.read(&mut buffer).await?;
+    let response = String::from_utf8_lossy(&buffer[..n]).to_string();
+    Ok(response)
+}
 
 /**
  * Attempt to make a TCP connection to the daemon.

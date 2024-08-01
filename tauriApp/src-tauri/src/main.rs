@@ -3,29 +3,28 @@
     windows_subsystem = "windows"
 )]
 
-use tokio::runtime::Runtime;
+use std::fs::OpenOptions;
+use std::io::Write;
+use tauri::generate_handler;
+use tauri::{Builder, command};
 
-mod comm;
-use comm::{connect_to_pipe, write_to_pipe, read_from_pipe};
+#[command]
+async fn write_to_pipe(message: String) -> Result<(), String> {
+    let pipe_path = r"\\.\pipe\tauriNodeComm";
+    let mut file = match OpenOptions::new().write(true).open(pipe_path) {
+        Ok(file) => file,
+        Err(e) => return Err(format!("Error opening pipe: {:?}", e)),
+    };
 
-#[tauri::command]
-fn send_to_pipe(message: String) -> Result<String, String> {
-    println!("Received message from frontend: {}", message); // Print the message in the terminal
-
-    let runtime = Runtime::new().unwrap();
-    let pipe_name = r"\\.\pipe\tauriNodeComm";
-
-    runtime.block_on(async {
-        let mut client = connect_to_pipe(pipe_name).await.map_err(|e| e.to_string())?;
-        write_to_pipe(&mut client, &message).await.map_err(|e| e.to_string())?;
-        let response = read_from_pipe(&mut client).await.map_err(|e| e.to_string())?;
-        Ok(response)
-    })
+    match file.write_all(message.as_bytes()) {
+        Ok(_) => Ok(()),
+        Err(e) => Err(format!("Error writing to pipe: {:?}", e)),
+    }
 }
 
 fn main() {
-    tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![send_to_pipe])
+    Builder::default()
+        .invoke_handler(generate_handler![write_to_pipe])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

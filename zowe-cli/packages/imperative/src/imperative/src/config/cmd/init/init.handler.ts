@@ -26,6 +26,9 @@ import net = require("net");
 import { exec } from "child_process";
 import path = require("path");
 import * as fs from "fs";
+import { promisify } from "util";
+
+const execAsync = promisify(exec);
 
 export default class InitHandler implements ICommandHandler {
     private params: IHandlerParameters;
@@ -33,54 +36,91 @@ export default class InitHandler implements ICommandHandler {
     public async process(params: IHandlerParameters): Promise<void> {
         this.params = params;
 
+        // Create the named pipe
+        this.createNamedPipe();
+
         // Start the Tauri application
-        this.startTauriApp();
+        await this.startTauriApp();
 
         // Example of how to call the Tauri command from the CLI backend
         const message = "Hello from CLI";
-        const response = await this.sendToTauri(message);
-        this.params.response.console.log(`Received from Tauri: ${response}`);
+        this.sendToTauri(message);
+
+        // Set up a listener to read from the pipe asynchronously
+        this.listenToPipe();
     }
 
-    private startTauriApp() {
-        const tauriPath = path.join(__dirname,'../../../../../../../../../../../../repos/innovations/zoweGUI2/tauriApp/src-tauri/target/release/zowegui.exe');
-        exec(tauriPath, (error, stdout, stderr) => {
-            if (error) {
-                this.params.response.console.log(`Error starting Tauri app: ${error.message}`);
-                return;
-            }
+    private createNamedPipe() {
+        const pipePath = path.join(__dirname, '../../../../../../../../../../../../repos/innovations/zoweGUI2/pipe/tauriNodeComm');
+        this.params.response.console.log(`Creating named pipe at: ${pipePath}`);
+
+        if (!fs.existsSync(pipePath)) {
+            const server = net.createServer((stream) => {
+                stream.on('data', (data) => {
+                    console.log(`Data received: ${data}`);
+                });
+                stream.on('end', () => {
+                    console.log('End of stream');
+                });
+            });
+
+            server.listen(pipePath, () => {
+                console.log(`Named pipe created at: ${pipePath}`);
+            });
+        } else {
+            this.params.response.console.log(`Named pipe already exists at: ${pipePath}`);
+        }
+    }
+
+    private async startTauriApp() {
+        const tauriPath = path.join(__dirname, '../../../../../../../../../../../../repos/innovations/zoweGUI2/tauriApp/src-tauri/target/debug/app.exe');
+        this.params.response.console.log(`Executing Tauri app at path: ${tauriPath}`);
+
+        try {
+            const { stdout, stderr } = await execAsync(tauriPath);
             if (stderr) {
                 this.params.response.console.log(`Tauri app stderr: ${stderr}`);
-                return;
             }
             this.params.response.console.log(`Tauri app stdout: ${stdout}`);
+        } catch (error) {
+            this.params.response.console.log(`Error starting Tauri app: ${error.message}`);
+        }
+    }
+
+    private async sendToTauri(message: string) {
+        const pipePath = path.join(__dirname, '../../../../../../../../../../../../repos/innovations/zoweGUI2/pipe/tauriNodeComm');
+        this.params.response.console.log(`Writing to pipe at: ${pipePath}`);
+
+        // Write to named pipe
+        const writeStream = fs.createWriteStream(pipePath, { encoding: 'utf8' });
+        writeStream.write(message, (err) => {
+            if (err) {
+                this.params.response.console.log(`Error writing to pipe: ${err}`);
+            }
+            writeStream.end();
         });
     }
 
-    private async sendToTauri(message: string): Promise<string> {
-        return new Promise((resolve, reject) => {
-            const pipePath = path.join(__dirname,'../../../../../../../../../../../../repos/innovations/zoweGUI2/pipe/tauriNodeComm');
+    private listenToPipe() {
+        const pipePath = path.join(__dirname, '../../../../../../../../../../../../repos/innovations/zoweGUI2/pipe/tauriNodeComm');
+        this.params.response.console.log(`Listening to pipe at: ${pipePath}`);
 
-            // Write to named pipe
-            const writeStream = fs.createWriteStream(pipePath, { encoding: 'utf8' });
-            writeStream.write(message);
-            writeStream.end();
+        const readStream = fs.createReadStream(pipePath, { encoding: 'utf8' });
 
-            // Read from named pipe
-            const readStream = fs.createReadStream(pipePath, { encoding: 'utf8' });
+        readStream.on('data', chunk => {
+            this.params.response.console.log(`Data received from pipe: ${chunk}`);
+        });
 
-            let data = '';
-            readStream.on('data', chunk => {
-                data += chunk;
-            });
+        readStream.on('end', () => {
+            this.params.response.console.log('End of pipe stream');
+            // Re-establish the connection if necessary
+            setTimeout(() => this.listenToPipe(), 1000); // Re-establish after 1 second
+        });
 
-            readStream.on('end', () => {
-                resolve(data);
-            });
-
-            readStream.on('error', err => {
-                reject(err);
-            });
+        readStream.on('error', err => {
+            this.params.response.console.log(`Error reading from pipe: ${err}`);
+            // Handle error and possibly retry
+            setTimeout(() => this.listenToPipe(), 1000); // Re-establish after 1 second
         });
     }
 

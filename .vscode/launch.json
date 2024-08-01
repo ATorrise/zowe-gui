@@ -1,17 +1,23 @@
 {
-    "commonSettings": {
-        "outFilesDirectory": "${workspaceFolder}/dist"
-    },
+    "version": "0.2.0",
     "configurations": [
-    {
-        "type": "node",
-        "request": "launch",
-        "name": "config init",
-        "program": "${workspaceFolder}/zowe-cli/packages/cli/lib/main.js",
-        "console": "integratedTerminal",
-        "args": ["config", "init"],
-        "outputCapture": "std",
-        "resolveSourceMapLocations": null
-    }
-  ]
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "config init",
+            "program": "${workspaceFolder}/zowe-cli/packages/cli/lib/main.js",
+            "console": "integratedTerminal",
+            "args": ["config", "init"],
+            "outputCapture": "std",
+            "cwd": "${workspaceFolder}/zowe-cli/packages/cli",
+            "env": {
+                "NODE_ENV": "development"
+                // Add other environment variables needed for your app here
+            },
+            "resolveSourceMapLocations": [
+                "${workspaceFolder}/**",
+                "!**/node_modules/**"
+            ]
+        }
+    ]
 }
