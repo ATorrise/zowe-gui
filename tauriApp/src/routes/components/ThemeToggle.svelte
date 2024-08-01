@@ -3,7 +3,8 @@
 
     function toggleTheme() {
         theme = theme === 'dark' ? 'light' : 'dark';
-        document.body.className = theme;
+        document.documentElement.classList.toggle('dark-theme', theme === 'dark');
+        document.documentElement.classList.toggle('light-theme', theme === 'light');
     }
 </script>
 
@@ -12,11 +13,11 @@
 </button>
 
 <style>
-    :global(body.dark) {
+    :global(.dark-theme) {
         background-color: #252628;
         color: white;
     }
-    :global(body.light) {
+    :global(.light-theme) {
         background-color: white;
         color: black;
     }

@@ -21,10 +21,14 @@
         } else if (tierType === '2-tiered') {
             if (currentLpar) {
                 currentLpar.profiles.push(profile);
+            } else {
+                profiles = [...profiles, profile];
             }
         } else if (tierType === '3-tiered') {
             if (currentSysplex && currentLpar) {
                 currentLpar.profiles.push(profile);
+            } else {
+                profiles = [...profiles, profile];
             }
         }
     };
@@ -62,14 +66,11 @@
 </div>
 {#if tierType === '3-tiered'}
     <SystemConfig title="Add Sysplex" on:addsystem={event => addSysplex(event.detail.systemName)} />
-    {#if currentSysplex}
-        <SystemConfig title="Add LPAR" on:addsystem={event => addLpar(event.detail.systemName)} />
-    {/if}
 {/if}
-{#if tierType === '2-tiered' && !currentLpar}
+{#if tierType !== 'flat'}
     <SystemConfig title="Add LPAR" on:addsystem={event => addLpar(event.detail.systemName)} />
 {/if}
-<AddProfile on:addprofile={addProfile} />
+<AddProfile {tierType} sysplexes={nestedConfig.sysplexes} lpars={currentSysplex ? currentSysplex.lpars : []} on:addprofile={addProfile} />
 <ReviewConfig {profiles} {nestedConfig} {tierType} />
 
 <h2>Profiles</h2>

@@ -1,23 +1,26 @@
 <script>
     import { createEventDispatcher } from 'svelte';
 
-    const dispatch = createEventDispatcher();
+    export let title;
+    export let sysplex;
 
-    export let configType;
+    const dispatch = createEventDispatcher();
 
     let systemName = '';
 
     const addSystem = () => {
-        dispatch('addsystem', { systemName });
+        dispatch('addsystem', { systemName, sysplex });
         systemName = '';
     };
 </script>
 
-{#if configType !== 'Flat: Profiles'}
-    <h2>Add {configType === '3 tiered: SYSPLEX -> LPAR -> Profiles' ? 'Sysplex' : 'LPAR'}</h2>
-    <div>
-        <label>System Name</label>
-        <input type="text" bind:value={systemName} />
-    </div>
+<h2>{title}</h2>
+<div>
+    <label>System Name</label>
+    <input type="text" bind:value={systemName} />
     <button on:click={addSystem}>Add System</button>
-{/if}
+</div>
+
+<style>
+    /* Add styles as necessary */
+</style>

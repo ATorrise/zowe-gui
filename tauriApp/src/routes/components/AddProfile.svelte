@@ -5,70 +5,122 @@
 
     export let sysplexes = [];
     export let lpars = [];
-    export let configType;
+    export let tierType;
 
     let sysplex = '';
     let lpar = '';
     let hostAddress = '';
-    let accessMethod = 'APIML';
-    let authenticationMethod = 'Basic Auth';
-    let serviceProfileProperties = '';
+    let authenticationMethod = 'APIML';
+    let profileType = 'base';
+    let port = '';
+    let rejectUnauthorized = true;
+    let user = '';
+    let password = '';
+    let certFilePath = '';
+    let certKeyFile = '';
 
     const addProfile = () => {
-        dispatch('addprofile', {
-            sysplex,
-            lpar,
+        const profile = {
             hostAddress,
-            accessMethod,
             authenticationMethod,
-            serviceProfileProperties
-        });
+            profileType,
+            port,
+            rejectUnauthorized: rejectUnauthorized === false ? false : undefined,
+            user: authenticationMethod === 'Basic (User, Password)' ? user : undefined,
+            password: authenticationMethod === 'Basic (User, Password)' ? password : undefined,
+            certFilePath: authenticationMethod === 'Cert' ? certFilePath : undefined,
+            certKeyFile: authenticationMethod === 'Cert' ? certKeyFile : undefined
+        };
+        dispatch('addprofile', profile);
+    };
+
+    const clearProfileInfo = () => {
         hostAddress = '';
-        accessMethod = 'APIML';
-        authenticationMethod = 'Basic Auth';
-        serviceProfileProperties = '';
+        authenticationMethod = 'APIML';
+        profileType = 'base';
+        port = '';
+        rejectUnauthorized = true;
+        user = '';
+        password = '';
+        certFilePath = '';
+        certKeyFile = '';
     };
 </script>
 
-{#if configType === '3 tiered: SYSPLEX -> LPAR -> Profiles'}
-    <label>Sysplex</label>
+<h2>Add Profile</h2>
+{#if tierType === '3-tiered'}
+    <label>SYSPLEX</label>
     <select bind:value={sysplex}>
+        <option value="">Select SYSPLEX</option>
         {#each sysplexes as s}
-            <option>{s}</option>
+            <option>{s.name}</option>
         {/each}
     </select>
 {/if}
 
-{#if configType !== 'Flat: Profiles'}
+{#if tierType !== 'flat'}
     <label>LPAR</label>
     <select bind:value={lpar}>
+        <option value="">Select LPAR</option>
         {#each lpars as l}
-            <option>{l}</option>
+            <option>{l.name}</option>
         {/each}
     </select>
 {/if}
 
-<h2>Add Profile</h2>
 <div>
     <label>Host Address</label>
     <input type="text" bind:value={hostAddress} />
 </div>
 <div>
-    <label>Access Method</label>
-    <select bind:value={accessMethod}>
-        <option>APIML</option>
-        <option>Direct</option>
-    </select>
-</div>
-<div>
     <label>Authentication Method</label>
     <select bind:value={authenticationMethod}>
-        <option>Basic Auth</option>
-        <option>Client Cert</option>
+        <option>APIML</option>
+        <option>Basic (User, Password)</option>
+        <option>Cert</option>
     </select>
 </div>
 <div>
-    <label>Service Profile Properties</label>
-    <input type="text" bind:value={serviceProfileProperties} />
+    <label>Profile Type</label>
+    <select bind:value={profileType}>
+        <option>base</option>
+        <option>zosmf</option>
+        <option>tso</option>
+        <option>zftp</option>
+        <option>ssh</option>
+    </select>
 </div>
+<div>
+    <label>Port</label>
+    <input type="text" bind:value={port} />
+</div>
+<div>
+    <label>Reject Unauthorized</label>
+    <input type="checkbox" bind:checked={rejectUnauthorized} />
+</div>
+{#if authenticationMethod === 'Basic (User, Password)'}
+    <div>
+        <label>User</label>
+        <input type="text" bind:value={user} />
+    </div>
+    <div>
+        <label>Password</label>
+        <input type="password" bind:value={password} />
+    </div>
+{/if}
+{#if authenticationMethod === 'Cert'}
+    <div>
+        <label>Cert File Path</label>
+        <input type="text" bind:value={certFilePath} />
+    </div>
+    <div>
+        <label>Cert Key File</label>
+        <input type="text" bind:value={certKeyFile} />
+    </div>
+{/if}
 <button on:click={addProfile}>Add Profile</button>
+<button on:click={clearProfileInfo}>Clear Profile Info</button>
+
+<style>
+    /* Add styles as necessary */
+</style>
