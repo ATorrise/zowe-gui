@@ -1,0 +1,42 @@
+body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+h1, h2 {
+    font-family: 'Roboto Condensed', sans-serif;
+    font-weight: 300;
+}
+
+label {
+    display: block;
+    margin-top: 10px;
+    font-weight: 500;
+}
+
+input, select, button {
+    display: block;
+    margin-top: 5px;
+    padding: 5px;
+    font-size: 14px;
+}
+
+button {
+    background-color: #3162ac;
+    color: white;
+    border: none;
+    cursor: pointer;
+    margin-top: 10px;
+    padding: 10px 20px;
+}
+
+button:hover {
+    background-color: #264c86;
+}
+
+
+.dark-theme input[type="text"],
+.dark-theme select {
+    color: #000;
+}

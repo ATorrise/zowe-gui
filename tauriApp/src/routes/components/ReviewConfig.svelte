@@ -1,37 +1,19 @@
 <script>
-  export let systems;
-  export let defaultSystem;
-  export let prevStep;
-
-  function finish() {
-    // Logic to save the configuration or send it to the backend
-  }
+    export let profiles = [];
 </script>
 
-<div>
-  <h2>Review Configuration</h2>
-  {#each $systems as system, index}
+<h2>Review Configuration</h2>
+
+{#each profiles as profile}
     <div>
-      <h3>System {index + 1} {index === $defaultSystem ? '(Default)' : ''}</h3>
-      <p><strong>Host:</strong> {system.host}</p>
-      <p><strong>Access Method:</strong> {system.accessMethod}</p>
-      <p><strong>Authentication Method:</strong> {system.authMethod}</p>
-      <h4>Properties</h4>
-      {#each system.properties as prop}
-        <p><strong>{prop.key}:</strong> {prop.value}</p>
-      {/each}
+        {#if profile.sysplex}
+            <h3>{profile.sysplex}</h3>
+        {/if}
+        {#if profile.lpar}
+            <h4>{profile.lpar}</h4>
+        {/if}
+        <ul>
+            <li>{JSON.stringify(profile)}</li>
+        </ul>
     </div>
-  {/each}
-
-  <button on:click={prevStep}>Back</button>
-  <button on:click={finish}>Finish</button>
-</div>
-
-<style>
-  div {
-    margin-bottom: 1rem;
-  }
-  button {
-    margin-top: 1rem;
-  }
-</style>
+{/each}
