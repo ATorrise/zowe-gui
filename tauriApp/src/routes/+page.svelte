@@ -72,14 +72,6 @@
 {/if}
 <AddProfile {tierType} sysplexes={nestedConfig.sysplexes} lpars={currentSysplex ? currentSysplex.lpars : []} on:addprofile={addProfile} />
 <ReviewConfig {profiles} {nestedConfig} {tierType} />
-
-<h2>Profiles</h2>
-<ul>
-    {#each profiles as profile}
-        <li>{JSON.stringify(profile)}</li>
-    {/each}
-</ul>
-
 <style>
     @import url('https://fonts.googleapis.com/css?family=Roboto+Condensed|Roboto:300,400,500');
     @import '../styles.css';

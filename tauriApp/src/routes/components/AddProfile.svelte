@@ -35,9 +35,9 @@
     };
 
     const clearProfileInfo = () => {
-        hostAddress = '';
         authenticationMethod = 'APIML';
         profileType = 'base';
+        hostAddress = '';
         port = '';
         rejectUnauthorized = true;
         user = '';
@@ -69,10 +69,6 @@
 {/if}
 
 <div>
-    <label>Host Address</label>
-    <input type="text" bind:value={hostAddress} />
-</div>
-<div>
     <label>Authentication Method</label>
     <select bind:value={authenticationMethod}>
         <option>APIML</option>
@@ -89,6 +85,10 @@
         <option>zftp</option>
         <option>ssh</option>
     </select>
+</div>
+<div>
+    <label>Host Address</label>
+    <input type="text" bind:value={hostAddress} />
 </div>
 <div>
     <label>Port</label>
@@ -120,7 +120,3 @@
 {/if}
 <button on:click={addProfile}>Add Profile</button>
 <button on:click={clearProfileInfo}>Clear Profile Info</button>
-
-<style>
-    /* Add styles as necessary */
-</style>
