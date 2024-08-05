@@ -92,15 +92,14 @@ Using [napi-rs](https://napi.rs/) or [Neon](https://neon-bindings.com/) to creat
 - [ ] Get selected data into the cli from the UI before it closes (enable dynamism)
     - [ ] Implement a file watcher?
     - [ ] Get data from named pipe and into config.json
-- [ ] Workshop UI on paper/whiteboard
-    - [ ] Check with a team member to ensure proper understanding/directionthen
-    - [ ] Possibly review it with some UX person?
-- [ ] Set up UI with multiple views with svelte frontend
-    - [ ] Pick level of nesting (or flat structure?)write out each profile's credentials
-    - [ ] Enable a sidebar that shows what's been added (profile name, not all the details)
+- [X] Workshop UI on paper/whiteboard
+    - [X] Check with a team member to ensure proper understanding/directionthen
+- [X] Set up UI with multiple views with svelte frontend
+    - [X] Pick level of nesting (or flat structure?)write out each profile's credentials
+    - [X] Enable a view that shows what's been added (profile name, not all the details)
 - [ ] Detect if already have a config
     - [ ] determine if showing gui error popup or cli red error
-- [ ] figure out how to populate fields with any defaults
+- [X] figure out how to populate fields with any defaults
 
 
 Original Design Document: https://docs.google.com/document/d/1O_Kh8d5py-Emobe-op5IVTBpx0sc2tpo2zJawpNNpx4/edit?usp=sharing 
