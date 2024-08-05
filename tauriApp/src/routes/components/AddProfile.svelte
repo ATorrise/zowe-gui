@@ -82,7 +82,6 @@
         <option>base</option>
         <option>zosmf</option>
         <option>tso</option>
-        <option>zftp</option>
         <option>ssh</option>
     </select>
 </div>
